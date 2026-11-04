@@ -91,4 +91,4 @@ If you encounter any issues or have feature requests, please [open an issue](htt
 
 Released under the [MIT License](LICENSE).
 
-Copyright © 2026 RJ Nexus.
+Copyright © 2026 RJ Nexus. 
