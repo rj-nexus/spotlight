@@ -24,8 +24,10 @@
 
     $currentLocale = app()->getLocale();
     $locales = function_exists('rj_frontend_locales') ? rj_frontend_locales() : ['en'];
-    $logoImage = $settings['logo_image'] ?? '';
-    $logoText = $settings['logo_text'] ?? 'RJ CMS';
+
+    $logoImage = trim((string) ($settings['logo_image'] ?? ''));
+    $logoText = trim((string) ($settings['logo_text'] ?? ''));
+    $defaultLogo = 'https://raw.githubusercontent.com/rj-nexus/spotlight/main/assets/rj%20cms.png';
 
     $ctaText = $settings['cta_text'] ?? '';
     $ctaUrl = $settings['cta_url'] ?? '#';
@@ -37,16 +39,9 @@
     $authUser = auth()->user();
     $initialUser = null;
     if ($authUser) {
-        $name = trim((string) $authUser->name);
-        $parts = preg_split('/\s+/u', $name) ?: [];
-        $initials = count($parts) > 1
-            ? mb_strtoupper(mb_substr($parts[0], 0, 1) . mb_substr($parts[count($parts) - 1], 0, 1))
-            : mb_strtoupper(mb_substr($parts[0] ?? '?', 0, 1));
-
         $initialUser = [
-            'name'     => $authUser->name,
-            'initials' => $initials,
-            'account'  => route('frontend.account.index', absolute: false),
+            'name'    => $authUser->name,
+            'account' => route('frontend.account.index', absolute: false),
         ];
     }
 
@@ -64,21 +59,8 @@
         return '/' . $targetLoc . '/' . ltrim($currentPath, '/');
     };
 
-    $getFlag = function (string $code): string {
-        if (function_exists('rj_lang_flag_url')) {
-            $url = rj_lang_flag_url($code);
-            if ($url) return '<img src="' . e($url) . '" alt="">';
-        }
-        $label = $code === 'en' ? 'GB' : strtoupper(mb_substr($code, 0, 2));
-        return '<b>' . e($label) . '</b>';
-    };
-
-    $flagAttrs = function (string $code): string {
-        $hasImg = function_exists('rj_lang_flag_url') && rj_lang_flag_url($code);
-        if ($hasImg) return 'class="rj-glass-flag"';
-        $h  = crc32($code) % 360;
-        $h2 = ($h + 50) % 360;
-        return 'class="rj-glass-flag is-badge" style="background:linear-gradient(135deg,hsl(' . $h . ' 75% 62%),hsl(' . $h2 . ' 72% 48%));"';
+    $langName = function (string $code): string {
+        return function_exists('rj_lang_name') ? rj_lang_name($code) : strtoupper($code);
     };
 @endphp
 
@@ -86,14 +68,12 @@
     <div class="rj-glass-header-inner">
 
         <a href="{{ url('/' . $currentLocale) }}" class="rj-glass-logo">
-            @if($logoImage)
-                <img src="{{ $logoImage }}" alt="{{ $logoText }}">
-            @else
-                <svg class="rj-glass-logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
-                    <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
+            @if($logoImage !== '')
+                <img src="{{ $logoImage }}" alt="{{ $logoText !== '' ? $logoText : 'Logo' }}">
+            @elseif($logoText !== '')
                 <span>{{ $logoText }}</span>
+            @else
+                <img src="{{ $defaultLogo }}" alt="RJ CMS">
             @endif
         </a>
 
@@ -123,15 +103,13 @@
             @if($showLang && count($locales) > 1)
                 <div class="rj-glass-nav-item" id="{{ $uid }}_lang">
                     <button type="button" class="rj-glass-lang-btn" data-toggle>
-                        <span {!! $flagAttrs($currentLocale) !!}>{!! $getFlag($currentLocale) !!}</span>
-                        <span>{{ strtoupper($currentLocale) }}</span>
+                        <span>{{ $langName($currentLocale) }}</span>
                         <svg class="rj-glass-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="rj-glass-dropdown rj-dropdown-right" data-menu>
                         @foreach($locales as $loc)
                             <a href="{{ route('rj.widget.locale', ['locale' => $loc, 'redirect' => $getLocaleRedirect($loc)]) }}" class="rj-glass-dropdown-link {{ $loc === $currentLocale ? 'active' : '' }}">
-                                <span {!! $flagAttrs($loc) !!}>{!! $getFlag($loc) !!}</span>
-                                <span>{{ function_exists('rj_lang_name') ? rj_lang_name($loc) : strtoupper($loc) }}</span>
+                                <span>{{ $langName($loc) }}</span>
                             </a>
                         @endforeach
                     </div>
@@ -141,14 +119,11 @@
             @if($showLogin)
                 <div id="{{ $uid }}_login" class="rj-glass-login-wrap">
                     <div data-logged-out @if($initialUser) style="display:none;" @endif>
-                        <button type="button" class="rj-glass-login-btn" data-login-btn>
-                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1"/></svg>
-                            <span>{{ $loginLabel }}</span>
-                        </button>
+                        <button type="button" class="rj-glass-login-btn" data-login-btn>{{ $loginLabel }}</button>
                     </div>
                     <div data-logged-in @if(!$initialUser) style="display:none;" @endif>
-                        <a href="{{ $initialUser['account'] ?? '#' }}" class="rj-glass-user-link" data-user-link title="{{ $initialUser['name'] ?? '' }}">
-                            <span class="rj-glass-avatar" data-user-avatar>{{ $initialUser['initials'] ?? '' }}</span>
+                        <a href="{{ $initialUser['account'] ?? '#' }}" class="rj-glass-user-btn" data-user-link title="{{ $initialUser['name'] ?? '' }}">
+                            <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1"/></svg>
                         </a>
                     </div>
 
@@ -196,6 +171,7 @@
         --rjg-hover-bg: rgba(255, 255, 255, 0.09);
         --rjg-line: rgba(255, 255, 255, 0.14);
         --rjg-panel: rgba(12, 14, 22, 0.96);
+        --rjg-glass: rgba(255, 255, 255, 0.06);
         position: sticky; top: 0; left: 0; width: 100%; z-index: 1000;
         background: linear-gradient(180deg, rgba(5, 7, 12, 0.55) 0%, rgba(5, 7, 12, 0) 100%);
         border-bottom: 1px solid transparent;
@@ -214,10 +190,9 @@
     }
     .rj-glass-header.is-stuck .rj-glass-header-inner { padding-top: 12px; padding-bottom: 12px; }
 
-    .rj-glass-logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -0.02em; }
-    .rj-glass-logo-icon { width: 32px; height: 32px; color: var(--rj-primary); }
-    .rj-glass-logo img { max-height: 36px; width: auto; transition: max-height 0.3s ease; }
-    .rj-glass-header.is-stuck .rj-glass-logo img { max-height: 32px; }
+    .rj-glass-logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: -0.02em; flex-shrink: 0; }
+    .rj-glass-header .rj-glass-logo img { height: 26px; max-height: 26px; width: auto; max-width: 120px; object-fit: contain; display: block; transition: height 0.3s ease, max-height 0.3s ease; }
+    .rj-glass-header.is-stuck .rj-glass-logo img { height: 22px; max-height: 22px; }
 
     .rj-glass-nav { display: flex; align-items: center; gap: 4px; }
     .rj-glass-nav-item { position: relative; }
@@ -231,7 +206,7 @@
     .rj-glass-nav-item:hover .rj-glass-chevron { transform: rotate(180deg); }
 
     .rj-glass-dropdown {
-        position: absolute; top: 100%; left: 0; min-width: 190px; padding: 8px; margin-top: 8px;
+        position: absolute; top: 100%; left: 0; min-width: 160px; padding: 8px; margin-top: 8px;
         background: var(--rjg-panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         border: 1px solid var(--rjg-line); border-radius: 14px;
         box-shadow: 0 18px 50px -10px rgba(0, 0, 0, 0.7);
@@ -245,32 +220,44 @@
     .rj-glass-dropdown-link:hover, .rj-glass-dropdown-link.active { color: #fff; background: var(--rjg-hover-bg); }
     .rj-glass-dropdown-link.active { color: var(--rj-primary); font-weight: 600; }
 
-    .rj-glass-flag { width: 20px; height: 20px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #1e293b; box-shadow: 0 0 0 1px rgba(255,255,255,0.12); }
-    .rj-glass-flag img { width: 100%; height: 100%; object-fit: cover; }
-    .rj-glass-flag.is-badge b { color: #fff; font-size: 9px; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,.18); }
+    .rj-glass-actions { display: flex; align-items: center; gap: 10px; }
 
-    .rj-glass-actions { display: flex; align-items: center; gap: 12px; }
-    .rj-glass-lang-btn, .rj-glass-login-btn {
+    .rj-glass-lang-btn {
         display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px;
-        background: rgba(255, 255, 255, 0.04); border: 1px solid var(--rjg-line); border-radius: 10px;
-        color: rgba(255, 255, 255, 0.88); font-size: 13px; font-weight: 600; cursor: pointer;
+        background: var(--rjg-glass); border: 1px solid var(--rjg-line); border-radius: 10px;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        color: rgba(255, 255, 255, 0.88); font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer;
         transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
-    .rj-glass-lang-btn:hover, .rj-glass-login-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: rgba(255, 255, 255, 0.28); }
-    .rj-glass-login-btn svg { width: 16px; height: 16px; }
+    .rj-glass-lang-btn:hover { background: rgba(255, 255, 255, 0.12); color: #fff; border-color: rgba(255, 255, 255, 0.28); }
 
-    .rj-glass-user-link { display: inline-flex; text-decoration: none; }
-    .rj-glass-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--rj-primary), var(--rj-secondary)); color: #fff; font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--rj-primary) 55%, transparent); transition: transform .2s; }
-    .rj-glass-user-link:hover .rj-glass-avatar { transform: scale(1.05); }
+    .rj-glass-login-btn {
+        display: inline-flex; align-items: center; padding: 9px 18px;
+        background: var(--rjg-glass); border: 1px solid var(--rjg-line); border-radius: 10px;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        color: rgba(255, 255, 255, 0.9); font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .rj-glass-login-btn:hover { background: rgba(255, 255, 255, 0.12); color: #fff; border-color: rgba(255, 255, 255, 0.28); }
+
+    .rj-glass-user-btn {
+        width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center;
+        background: var(--rjg-glass); border: 1px solid var(--rjg-line); border-radius: 50%;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        color: rgba(255, 255, 255, 0.9); text-decoration: none;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .rj-glass-user-btn svg { width: 18px; height: 18px; }
+    .rj-glass-user-btn:hover { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.3); }
 
     .rj-glass-cta {
-        display: inline-flex; align-items: center; padding: 10px 22px;
-        background: var(--rj-primary); color: #fff; font-size: 14px; font-weight: 600; text-decoration: none;
-        border-radius: 10px; border: 1px solid color-mix(in srgb, var(--rj-primary) 70%, #fff);
-        box-shadow: 0 6px 22px -8px color-mix(in srgb, var(--rj-primary) 70%, transparent);
-        transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+        display: inline-flex; align-items: center; padding: 9px 20px;
+        background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 10px;
+        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        color: #fff; font-size: 13px; font-weight: 500; text-decoration: none;
+        transition: background 0.2s, border-color 0.2s;
     }
-    .rj-glass-cta:hover { filter: brightness(1.12); transform: translateY(-1px); box-shadow: 0 10px 28px -8px color-mix(in srgb, var(--rj-primary) 80%, transparent); }
+    .rj-glass-cta:hover { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.4); }
 
     .rj-glass-mobile-toggle { display: none; background: transparent; border: none; color: #fff; cursor: pointer; padding: 8px; }
     .rj-glass-mobile-toggle svg { width: 24px; height: 24px; }
@@ -299,6 +286,7 @@
         .rj-glass-dropdown::before { display: none; }
         .rj-glass-dropdown.is-open { display: block; }
         .rj-glass-mobile-toggle { display: block; }
+        .rj-glass-header .rj-glass-logo img { height: 24px; max-height: 24px; }
         .rj-glass-header.rj-mobile-open { height: 100vh; overflow-y: auto; background: rgba(7, 9, 15, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
         .rj-glass-header.rj-mobile-open .rj-glass-header-inner { flex-wrap: wrap; align-items: flex-start; }
         .rj-glass-header.rj-mobile-open .rj-glass-nav { display: flex; flex-direction: column; width: 100%; order: 3; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
@@ -341,7 +329,6 @@
         var form = loginRoot.querySelector('[data-login-form]');
         var errorEl = loginRoot.querySelector('[data-login-error]');
         var submitBtn = loginRoot.querySelector('[data-login-submit]');
-        var initialUser = @json($initialUser);
 
         function openModal() { if (modal) { modal.classList.add('is-open'); var email = modal.querySelector('[data-login-email]'); if(email) setTimeout(() => email.focus(), 100); } }
         function closeModal() { if (modal) modal.classList.remove('is-open'); }
