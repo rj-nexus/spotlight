@@ -77,6 +77,13 @@
                 <div class="rj-anf-grid">
                     @foreach($features as $i => $item)
                         <article class="rj-anf-card rj-anf-reveal" style="--i: {{ $i + 2 }};">
+<<<<<<< HEAD
+=======
+                            {{-- BURADA İKONU EKRANA ÇIXARIRIQ --}}
+                            <div class="rj-anf-card-icon">
+                                <iconify-icon icon="{{ $item['icon'] ?? 'ph:sparkle' }}"></iconify-icon>
+                            </div>
+>>>>>>> 88a78bbec7968caaa32e93f7ae4c4baa0f863c9d
                             <h3 class="rj-anf-card-title">{{ $item['feature_title'] ?? '' }}</h3>
                             <p class="rj-anf-card-desc">{{ $item['feature_text'] ?? '' }}</p>
                         </article>
@@ -472,18 +479,38 @@
         #{{ $uid }} .rj-anf-card:hover::after { opacity: 1; }
 
         #{{ $uid }} .rj-anf-card-title,
+<<<<<<< HEAD
         #{{ $uid }} .rj-anf-card-desc { position: relative; z-index: 1; }
 
 \1            display: flex;
             align-items: center;
             gap: 10px;
 \2
+=======
+        #{{ $uid }} .rj-anf-card-desc,
+        #{{ $uid }} .rj-anf-card-icon { position: relative; z-index: 1; }
+
+        /* İKON STİLİ */
+        #{{ $uid }} .rj-anf-card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 4px;
+            font-size: 24px;
+            color: var(--a3);
+            filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.4));
+        }
+
+        #{{ $uid }} .rj-anf-card-title {
+            font-size: 15px;
+>>>>>>> 88a78bbec7968caaa32e93f7ae4c4baa0f863c9d
             font-weight: 600;
             letter-spacing: -.01em;
             color: #fff;
             margin: 0;
             line-height: 1.3;
         }
+<<<<<<< HEAD
         #{{ $uid }} .rj-anf-card-title::before {
             content: '';
             flex-shrink: 0;
@@ -493,6 +520,8 @@
             background: var(--a3);
             box-shadow: 0 0 10px var(--a3);
         }
+=======
+>>>>>>> 88a78bbec7968caaa32e93f7ae4c4baa0f863c9d
         #{{ $uid }} .rj-anf-card-desc {
             font-size: 13px;
             line-height: 1.5;
@@ -554,6 +583,10 @@
             #{{ $uid }} .rj-anf-content { align-items: center; text-align: center; }
             #{{ $uid }} .rj-anf-text { margin-left: auto; margin-right: auto; }
             #{{ $uid }} .rj-anf-card { text-align: left; }
+<<<<<<< HEAD
+=======
+            #{{ $uid }} .rj-anf-card-icon { justify-content: center; }
+>>>>>>> 88a78bbec7968caaa32e93f7ae4c4baa0f863c9d
         }
         @media (max-width: 560px) {
             #{{ $uid }} .rj-anf-grid { grid-template-columns: 1fr; }
@@ -621,4 +654,10 @@
             }
         })();
     </script>
+<<<<<<< HEAD
+=======
+
+    {{-- İKONLARIN YÜKLƏNMƏSİ ÜÇÜN --}}
+    <script type="module" src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+>>>>>>> 88a78bbec7968caaa32e93f7ae4c4baa0f863c9d
 </section>
