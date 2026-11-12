@@ -2,9 +2,9 @@
 
 **A dark, modern, builder-first theme for [RJ Nexus](https://rjnexus.org).**
 
-![Version](https://img.shields.io/badge/version-1.0.0-green)
+![Version](https://img.shields.io/badge/version-1.0.1-%238A2BE2)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![RJ Nexus](https://img.shields.io/badge/RJ%20Nexus-%E2%89%A5%201.9.1-8A2BE2)
+![RJ Nexus](https://img.shields.io/badge/RJ%20Nexus-%E2%89%A5%201.8.6-8A2BE2)
 ![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%208.2-777BB4)
 
 > [!NOTE]
@@ -42,13 +42,13 @@ Spotlight is a highly customizable, dark-first theme designed for **product show
 | **Interactive Elements** | Animated pricing tables, infinite marquee testimonials, and accordion FAQs. |
 | **Advanced Forms** | Seamless integration with RJ Form Builder, featuring a custom dark-mode contact section. |
 | **Interactive Maps** | Built-in, 100% free API-keyless dark-mode maps powered by Leaflet and OpenStreetMap. |
-| **Multilingual** | Fully compatible with the 38 languages added in RJ Nexus v1.9.1, with automatic RTL support. |
+| **Multilingual** | Fully compatible with RJ Nexus's 38 languages, with automatic RTL support. |
 | **Custom Templates** | Dedicated templates for Contact, Landing, and Full-Width pages. |
 | **Performance First** | Lightweight, using pure CSS animations and minimal JS. |
 
 ## 📋 Requirements
 
-- **RJ Nexus** 1.9.1 or newer
+- **RJ Nexus** 1.8.6 or newer
 - **PHP** 8.2 or newer
 
 ## 🚀 Installation
