@@ -152,7 +152,12 @@
             @endif
 
             @if($ctaText)
-                <a href="{{ $ctaUrl }}" class="rj-glass-cta">{{ $ctaText }}</a>
+                <a href="{{ $ctaUrl }}" class="rj-glass-cta" aria-label="{{ $ctaText }}">
+                    <span class="rj-glass-cta-text">{{ $ctaText }}</span>
+                    <svg class="rj-glass-cta-icon" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </a>
             @endif
 
             <button class="rj-glass-mobile-toggle" onclick="document.getElementById('rj-header').classList.toggle('rj-mobile-open')">
@@ -220,7 +225,7 @@
     .rj-glass-dropdown-link:hover, .rj-glass-dropdown-link.active { color: #fff; background: var(--rjg-hover-bg); }
     .rj-glass-dropdown-link.active { color: var(--rj-primary); font-weight: 600; }
 
-    .rj-glass-actions { display: flex; align-items: center; gap: 10px; }
+    .rj-glass-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 
     .rj-glass-lang-btn {
         display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px;
@@ -250,16 +255,30 @@
     .rj-glass-user-btn svg { width: 18px; height: 18px; }
     .rj-glass-user-btn:hover { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.3); }
 
+    /* CTA DÜYMƏSİ: STANDART HALDA ŞÜŞƏ, TOXUNANDA MAVİ */
     .rj-glass-cta {
-        display: inline-flex; align-items: center; padding: 9px 20px;
-        background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 10px;
-        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-        color: #fff; font-size: 13px; font-weight: 500; text-decoration: none;
-        transition: background 0.2s, border-color 0.2s;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        padding: 9px 20px;
+        background: rgba(255, 255, 255, 0.05); 
+        border: 1px solid rgba(255, 255, 255, 0.15); 
+        border-radius: 10px;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        color: #ffffff; 
+        font-size: 13px; font-weight: 600; text-decoration: none;
+        transition: all 0.25s ease;
+        flex-shrink: 0;
     }
-    .rj-glass-cta:hover { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.4); }
+    /* Həm hover (kompüter), həm active (mobil toxunma) üçün mavi rəng */
+    .rj-glass-cta:hover,
+    .rj-glass-cta:active {
+        background: var(--rj-primary);
+        border-color: var(--rj-primary);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    }
+    .rj-glass-cta-icon { display: none; width: 18px; height: 18px; }
 
-    .rj-glass-mobile-toggle { display: none; background: transparent; border: none; color: #fff; cursor: pointer; padding: 8px; }
+    .rj-glass-mobile-toggle { display: none; background: transparent; border: none; color: #fff; cursor: pointer; padding: 8px; flex-shrink: 0; }
     .rj-glass-mobile-toggle svg { width: 24px; height: 24px; }
     .rj-icon-close { display: none; }
 
@@ -293,6 +312,34 @@
         .rj-glass-header.rj-mobile-open .rj-glass-actions { margin-left: auto; }
         .rj-glass-header.rj-mobile-open .rj-icon-menu { display: none; }
         .rj-glass-header.rj-mobile-open .rj-icon-close { display: block; }
+
+        /* MOBİL CTA: SABİT ÖLÇÜ VƏ TOXUNANDA MAVİ */
+        .rj-glass-actions { gap: 8px; }
+        .rj-glass-cta {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            min-height: 38px;
+            padding: 0;
+            border-radius: 50%;
+            aspect-ratio: 1 / 1;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .rj-glass-cta:hover,
+        .rj-glass-cta:active {
+            background: var(--rj-primary) !important;
+            border-color: var(--rj-primary) !important;
+        }
+        .rj-glass-cta-text { display: none; }
+        .rj-glass-cta-icon {
+            display: block;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
     }
 </style>
 

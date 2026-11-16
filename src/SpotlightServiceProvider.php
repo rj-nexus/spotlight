@@ -24,6 +24,11 @@ use Spotlight\Widgets\SpotlightFeaturesGridWidget;
 use Spotlight\Widgets\SpotlightMapWidget;
 use Spotlight\Widgets\SpotlightContactWidget;
 use Spotlight\Widgets\SpotlightProductListWidget;
+use Spotlight\Widgets\SpotlightBentoGridWidget;
+use Spotlight\Widgets\SpotlightStatsWidget;
+use Spotlight\Widgets\SpotlightCtaBannerWidget;
+use Spotlight\Widgets\SpotlightVideoShowcaseWidget;
+use Spotlight\Widgets\SpotlightComparisonTableWidget;
 
 class SpotlightServiceProvider extends ServiceProvider
 {
@@ -33,6 +38,9 @@ class SpotlightServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Laravel-ə spotlight:: namespace-inin harada olduğunu deyirik
+        $this->loadViewsFrom(__DIR__ . '/../views', 'spotlight');
+
         $this->registerWidgets();
         $this->maybeSetupStarterContent();
     }
@@ -62,6 +70,11 @@ class SpotlightServiceProvider extends ServiceProvider
                     new SpotlightMapWidget(),
                     new SpotlightContactWidget(),
                     new SpotlightProductListWidget(),
+                    new SpotlightBentoGridWidget(),
+                    new SpotlightStatsWidget(),
+                    new SpotlightCtaBannerWidget(),
+                    new SpotlightVideoShowcaseWidget(),
+                    new SpotlightComparisonTableWidget(),
                 ];
                 return array_merge($existing, $widgets);
             });

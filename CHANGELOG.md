@@ -2,15 +2,18 @@
 
 All notable changes to the Spotlight theme will be documented in this file.
 
-## [1.0.4] - 2026-11-13
+## [1.1.2] - 2026-11-16
 
-### 🐛 Bug Fixes & Improvements
+### 🎨 Design Fixes & Mobile Improvements
 
-This release fixes favicon synchronization between the admin Site Options and the frontend, along with two minor layout corrections.
+This release focuses on refining the user interface of the newly added widgets, fixing mobile responsiveness, and polishing the overall design system.
 
-### Fixed
-- **Favicon Not Updating:** The `layout.blade.php` now reads the favicon from `rj_site_option('favicon')` with a fallback to the legacy `rj_get_option('site_favicon')` key. This resolves the issue where favicons selected in Admin → Appearance → Options were not displaying on the frontend.
+### 🐛 Bug Fixes & Mobile Responsiveness
+- **Pricing Grid:** Updated the mobile view to display a 2-column layout instead of a single column, improving space utilization.
+- **Pricing Section (Annual View):** Fixed the layout and visual glitches in the "Annual" billing view.
+- **Header Mobile CTA:** Fixed the "Get Started" button on mobile. It is now a perfect glass circle that smoothly transitions to the primary blue color on touch (`:active` state).
+- **Stats Widget:** Fixed the counter animation to properly handle thousands separators and decimals without breaking the layout.
 
-### Improved
-- **Footer Background Color:** Replaced the hardcoded `#0a0a0f` color with the dynamic CSS variable `var(--rj-footer-bg)`. The footer background now respects the customizer settings.
-- **Image Placeholder:** Replaced the external GitHub-hosted fallback image with an inline Base64 SVG data URI. This removes external CDN dependency and improves loading performance for missing images.
+### ⚡ Improvements
+- **New Widgets Polishing:** Applied general design improvements, padding adjustments, and responsive fixes across all newly added widgets (Bento Grid, Stats, CTA Banner, Video Showcase, Comparison Table).
+- **Global Design Tweaks:** Refined hover states, typography scaling, and element spacing across the entire theme for a more cohesive look.
